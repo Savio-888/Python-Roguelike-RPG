@@ -19,9 +19,5 @@ def main():
         englib.console_flush()
         # Sets exit button (ESC).
         key = englib.console_check_for_keypress()
-        if key.vk == englib.KEY_ESCAPE:
-            return True
-
-__name__ = "__main__"
 if __name__ == "__main__":
     main()
