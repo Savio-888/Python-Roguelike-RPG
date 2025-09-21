@@ -27,6 +27,7 @@ def main():
         englib.sys_check_for_event(englib.EVENT_KEY_PRESS, key, mouse)
         englib.console_set_default_foreground(con, englib.white)
         englib.console_put_char(con, player_x, player_y, '@', englib.BKGND_NONE)
+        englib.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
         englib.console_flush()
 
         action = handle_keys(key)
