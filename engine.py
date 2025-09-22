@@ -2,7 +2,7 @@
 import sys
 import os
 import glob
-import tcod as englib
+import tcod as libtcod
 from input_handlers import handle_keys
 
 DATA_FOLDER = "data" # Defining 'data' path.
@@ -16,19 +16,19 @@ def main():
     player_y = int(screen_height / 2)
 
 
-    englib.console_set_custom_font(FONT_FILE, englib.FONT_TYPE_GRAYSCALE | englib.FONT_LAYOUT_TCOD) # Setting the basic layout of the game.
-    englib.console_init_root(screen_width, screen_height, "python roguelike", False) # Sets the size, the title, and if the program will or not be in fullscreen
-    con = englib.console_new(screen_width, screen_height)
+    libtcod.console_set_custom_font(FONT_FILE, libtcod.FONT_TYPE_GRAYSCALE | libtcod.FONT_LAYOUT_TCOD) # Setting the basic layout of the game.
+    libtcod.console_init_root(screen_width, screen_height, "python roguelike", False) # Sets the size, the title, and if the program will or not be in fullscreen
+    con = libtcod.console_new(screen_width, screen_height)
     # Sets keyboard and mouse variables.
-    key = englib.Key()
-    mouse = englib.Mouse()
-    while not englib.console_is_window_closed():
+    key = libtcod.Key()
+    mouse = libtcod.Mouse()
+    while not libtcod.console_is_window_closed():
         # Sets buffer.
-        englib.sys_check_for_event(englib.EVENT_KEY_PRESS, key, mouse)
-        englib.console_set_default_foreground(con, englib.white)
-        englib.console_put_char(con, player_x, player_y, '@', englib.BKGND_NONE)
-        englib.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
-        englib.console_flush()
+        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
+        libtcod.console_set_default_foreground(con, libtcod.white)
+        libtcod.console_put_char(con, player_x, player_y, '@', libtcod.BKGND_NONE) # puts main character (no pun intended) on screen.
+        libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
+        libtcod.console_flush()
 
         action = handle_keys(key)
 
@@ -43,6 +43,6 @@ def main():
         if exit :
             return True
         if fullscreen:
-            englib.console_set_fullscreen(not englib.console_is_fullscreen())
+            libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 if __name__ == "__main__":
     main()
