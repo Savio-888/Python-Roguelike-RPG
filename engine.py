@@ -6,6 +6,7 @@ import tcod as libtcod
 from input_handlers import handle_keys
 from entity import Entity
 from render_functions import clear_all, render_all
+from map_objects.game_map import GameMap
 
 DATA_FOLDER = "data" # Defining 'data' path.
 FONT_FILE = os.path.join(DATA_FOLDER, "dejavu10x10_gs_tc.png")
@@ -13,6 +14,13 @@ FONT_FILE = os.path.join(DATA_FOLDER, "dejavu10x10_gs_tc.png")
 def main():
     screen_width = 80
     screen_height = 50
+    map_width = 80
+    map_height = 45
+
+    colors = {
+        'dark_wall': libtcod.Color(0, 0, 100),
+        'dark_ground': libtcod.Color(50, 50, 100)
+    }
     # Setting player and npc entities.
     player = Entity(int(screen_width / 2), int(screen_height / 2), '@', libtcod.white)
     npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), 'g', libtcod.blue)
@@ -21,13 +29,15 @@ def main():
     libtcod.console_set_custom_font(FONT_FILE, libtcod.FONT_TYPE_GRAYSCALE | libtcod.FONT_LAYOUT_TCOD) # Setting the basic layout of the game.
     libtcod.console_init_root(screen_width, screen_height, "python roguelike", False) # Sets the size, the title, and if the program will or not be in fullscreen
     con = libtcod.console_new(screen_width, screen_height)
+
+    game_map = GameMap(map_width, map_height)
     # Sets keyboard and mouse variables.
     key = libtcod.Key()
     mouse = libtcod.Mouse()
     while not libtcod.console_is_window_closed():
         # Sets buffer.
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
-        render_all(con, entities, screen_width, screen_height)
+        render_all(con, entities, game_map, screen_width, screen_height, colors)
         libtcod.console_flush()
         clear_all(con, entities)
 
@@ -38,8 +48,8 @@ def main():
 
         if move: # making the character move.
             dx, dy = move
-            player.x += dx
-            player.y += dy
+            if not game_map.is_blocked(player.x + dx, player.y + dy):
+                player.move(dx, dy)
         if exit :
             return True
         if fullscreen:
