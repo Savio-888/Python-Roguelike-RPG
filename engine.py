@@ -4,6 +4,8 @@ import os
 import glob
 import tcod as libtcod
 from input_handlers import handle_keys
+from entity import Entity
+from render_functions import clear_all, render_all
 
 DATA_FOLDER = "data" # Defining 'data' path.
 FONT_FILE = os.path.join(DATA_FOLDER, "dejavu10x10_gs_tc.png")
@@ -11,10 +13,10 @@ FONT_FILE = os.path.join(DATA_FOLDER, "dejavu10x10_gs_tc.png")
 def main():
     screen_width = 80
     screen_height = 50
-
-    player_x = int(screen_width / 2)
-    player_y = int(screen_height / 2)
-
+    # Setting player and npc entities.
+    player = Entity(int(screen_width / 2), int(screen_height / 2), '@', libtcod.white)
+    npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), 'g', libtcod.blue)
+    entities = [npc, player]
 
     libtcod.console_set_custom_font(FONT_FILE, libtcod.FONT_TYPE_GRAYSCALE | libtcod.FONT_LAYOUT_TCOD) # Setting the basic layout of the game.
     libtcod.console_init_root(screen_width, screen_height, "python roguelike", False) # Sets the size, the title, and if the program will or not be in fullscreen
@@ -25,21 +27,19 @@ def main():
     while not libtcod.console_is_window_closed():
         # Sets buffer.
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
-        libtcod.console_set_default_foreground(con, libtcod.white)
-        libtcod.console_put_char(con, player_x, player_y, '@', libtcod.BKGND_NONE) # puts main character (no pun intended) on screen.
-        libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
+        render_all(con, entities, screen_width, screen_height)
         libtcod.console_flush()
+        clear_all(con, entities)
 
         action = handle_keys(key)
-
         move = action.get('move')
         exit = action.get("exit")
         fullscreen = action.get("fullscreen")
 
         if move: # making the character move.
             dx, dy = move
-            player_x += dx
-            player_y += dy
+            player.x += dx
+            player.y += dy
         if exit :
             return True
         if fullscreen:
